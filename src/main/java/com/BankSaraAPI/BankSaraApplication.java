@@ -10,6 +10,8 @@ ale nie jest to wymagane, jesli nie jest podana waluta, domyslnie przypisujemy P
 - uzytkownik powinien miec mozliwosc zmiany waluty konta
 - reszta funkcjonalnosci ma dzialac tak jak dzialala
 */
+
+//dupa
 @SpringBootApplication
 public class BankSaraApplication {
 
