@@ -11,7 +11,6 @@ ale nie jest to wymagane, jesli nie jest podana waluta, domyslnie przypisujemy P
 - reszta funkcjonalnosci ma dzialac tak jak dzialala
 */
 
-//dupa
 @SpringBootApplication
 public class BankSaraApplication {
 
