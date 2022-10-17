@@ -4,10 +4,10 @@ import com.BankSaraAPI.model.*;
 import com.BankSaraAPI.repository.BankRepository;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -19,7 +19,7 @@ class BankServiceTest {
     @Test
     void should_get_all_accounts() {
         // given
-        when(bankRepository.getAccounts()).thenReturn(Set.of(new Account(UUID.randomUUID(), "Glowne", 1, Currency.PLN)));
+        when(bankRepository.getAccounts()).thenReturn(List.of(new Account(UUID.randomUUID(), "Glowne", 1, Currency.PLN)));
         // when
         var accounts = bankService.getAccounts().size();
         // then
@@ -31,7 +31,7 @@ class BankServiceTest {
         // given
         var accountRequest = new CreateAccountRequest("Glowne", 1, Currency.PLN);
         var account = new Account(UUID.randomUUID(), "Glowne", 1, Currency.PLN);
-        when(bankRepository.getAccounts()).thenReturn(Set.of(account));
+        when(bankRepository.getAccounts()).thenReturn(List.of(account));
         // when
         bankService.createAccount(accountRequest);
         // then
@@ -44,7 +44,7 @@ class BankServiceTest {
         // given
         var accountRequest = new CreateAccountRequest("Glowne", 1, Currency.EUR);
         var account = new Account(UUID.randomUUID(), "Glowne", 1, Currency.EUR);
-        when(bankRepository.getAccounts()).thenReturn(Set.of(account));
+        when(bankRepository.getAccounts()).thenReturn(List.of(account));
         // when
         bankService.createAccount(accountRequest);
         // then
@@ -57,7 +57,7 @@ class BankServiceTest {
         // given
         var accountRequest = new CreateAccountRequest("Glowne", 1, null);
         var account = new Account(UUID.randomUUID(), "Glowne", 1, null);
-        when(bankRepository.getAccounts()).thenReturn(Set.of(account));
+        when(bankRepository.getAccounts()).thenReturn(List.of(account));
         // when
         bankService.createAccount(accountRequest);
         // then
@@ -71,7 +71,7 @@ class BankServiceTest {
         var id = UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477");
         var accountRequest = new EditAccountBalance(2);
         var account = new Account(UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477"), "Glowne", 1, Currency.PLN);
-        when(bankRepository.getAccounts()).thenReturn(Set.of(account));
+        when(bankRepository.getAccounts()).thenReturn(List.of(account));
         // when
         var editStudent = bankService.editAccount(id, accountRequest);
         // then
@@ -93,7 +93,7 @@ class BankServiceTest {
         // given
         var sender = new Account(UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477"), "Glowne", 100, Currency.PLN);
         var receiver = new Account(UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95471"), "Glowne", 0, Currency.PLN);
-        when(bankRepository.getAccounts()).thenReturn(Set.of(sender, receiver));
+        when(bankRepository.getAccounts()).thenReturn(List.of(sender, receiver));
         var transfer = new AccountTransferRequest(sender.getId(), receiver.getId(), 100);
         // when
         bankService.transfer(transfer);
@@ -107,7 +107,7 @@ class BankServiceTest {
         var id = UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477");
         var accountRequest = new EditAccountCurrency(Currency.EUR);
         var account = new Account(UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477"), "Glowne", 1, Currency.PLN);
-        when(bankRepository.getAccounts()).thenReturn(Set.of(account));
+        when(bankRepository.getAccounts()).thenReturn(List.of(account));
         // when
         bankService.changeCurrency(id, accountRequest);
         // then

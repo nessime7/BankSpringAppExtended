@@ -1,11 +1,12 @@
 package com.BankSaraAPI.controller;
+
 import com.BankSaraAPI.model.*;
 import com.BankSaraAPI.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 /*
@@ -32,7 +33,7 @@ public class BankController {
 
     // wyświetlenie wszystkich kont
     @GetMapping("accounts")
-    public ResponseEntity<Set<Account>> getAccounts() {
+    public ResponseEntity<List<Account>> getAccounts() {
         return ResponseEntity.ok(bankService.getAccounts());
     }
 
@@ -57,8 +58,9 @@ public class BankController {
         return ResponseEntity.ok(account);
     }
 
+    // delete id
     @DeleteMapping("accounts/{id}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID id, @RequestBody EditAccountBalance request) {
+    public ResponseEntity<Void> deleteAccount(@PathVariable UUID id) {
         bankService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }

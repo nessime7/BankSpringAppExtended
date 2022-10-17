@@ -1,0 +1,26 @@
+[
+  {
+    "id": "fc35ad28-91fc-449b-af3e-918417266f9d",
+    "name": "main account",
+    "balance": 10000.1,
+    "currency": "PLN"
+  },
+  {
+    "id": "5fd82e4e-c0ae-4771-a9d5-e18e3df32d65",
+    "name": "savings account",
+    "balance": 0.0,
+    "currency": "PLN"
+  },
+  {
+    "id": "c7c6c077-931e-42f9-982a-8c836ab6b932",
+    "name": "GBP account",
+    "balance": 250.5,
+    "currency": "PLN"
+  },
+  {
+    "id": "e22ab651-75ac-4404-9d48-842ae5d8d53c",
+    "name": "CHP account",
+    "balance": 1000.0,
+    "currency": "PLN"
+  }
+]

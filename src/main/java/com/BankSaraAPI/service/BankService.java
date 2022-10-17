@@ -5,7 +5,7 @@ import com.BankSaraAPI.repository.BankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,7 +18,7 @@ public class BankService {
         this.bankRepository = bankRepository;
     }
 
-    public Set<Account> getAccounts() {
+    public List<Account> getAccounts() {
         return bankRepository.getAccounts();
     }
 
