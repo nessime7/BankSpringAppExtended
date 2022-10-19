@@ -33,4 +33,9 @@ public class BankRepository {
         getAccounts().remove(account);
 
     }
+
+    public void deleteAll(){
+        this.accounts = new ArrayList<>();
+    }
+
 }

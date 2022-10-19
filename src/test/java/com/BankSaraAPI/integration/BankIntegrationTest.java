@@ -2,66 +2,79 @@ package com.BankSaraAPI.integration;
 
 import com.BankSaraAPI.BankSaraApplication;
 import com.BankSaraAPI.TestUtils;
+import com.BankSaraAPI.model.Account;
+import com.BankSaraAPI.model.Currency;
+import com.BankSaraAPI.repository.BankRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-// adnotacja używana do rejestrowania rozszerzeń dla klasy testowej
-@ExtendWith(SpringExtension.class) // klasa która implementuje @BeforeEach
-// uruchamia testy oparte na Spring Boot dla klasy BankSaraApplication
-// random port - testujemy z prawdziwym serwerem
 @SpringBootTest(classes = {BankSaraApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BankIntegrationTest {
 
-// wstrzykuje port http, port -  proces przeniesienia wersji programu komputerowego
-// na inną platformę sprzętową bądź programistyczną,
-// zazwyczaj na inną architekturę procesora lub system operacyjny
     @LocalServerPort
     private int port;
-    // kontekst aktualnego stanu aplikacji/obiektu,
     // zdefiniowanie stringa aby nie powtarzać za każdym razem w ścieżce
     private static final String CONTEXT = "account";
 
+    @Autowired
+    private BankRepository bankRepository;
+
     @BeforeEach
     void setUp() {
-        // biblioteka Java, która zapewnia język specyficzny dla domeny (DSL) do pisania zaawansowanych,
-        // łatwych do utrzymania testów dla interfejsów API zgodnych z REST.
-        // udostępnia nam całą składnię
         RestAssured.port = port;
         // włącz rejestrowanie żądania i odpowiedzi
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
+        bankRepository.deleteAll();
+        bankRepository.save(new Account(UUID.fromString("fc35ad28-91fc-449b-af3e-918417266f9d"), "main account", 10000.10, Currency.PLN));
+        bankRepository.save(new Account(UUID.fromString("5fd82e4e-c0ae-4771-a9d5-e18e3df32d65"), "savings account", 0, Currency.PLN));
+        bankRepository.save(new Account(UUID.fromString("5f73cec7-6ac1-46ee-a203-794c35d8800c"), "EUR account", 50, Currency.EUR));
+        bankRepository.save(new Account(UUID.fromString("3d9c2f62-d66c-4e31-89a7-ccdf271a7591"), "USD account", 50, Currency.USD));
+        bankRepository.save(new Account(UUID.fromString("c7c6c077-931e-42f9-982a-8c836ab6b932"), "GBP account", 250.5, Currency.PLN));
     }
 
     // wyświetlanie wszystkich kont
     @Test
-    void should_return_all_accounts() {
+    void should_return_all_accounts() throws IOException {
         given()
                 .when().get("/accounts")
                 .then()
-                .statusCode(HttpStatus.SC_OK);
-        // content should be checked
+                .statusCode(HttpStatus.SC_OK)
+                .and()
+                .body("", equalTo(TestUtils.getPath("response/get-all-accounts-response.json", CONTEXT).get("")));
     }
 
     // stworzenie nowego konta
     @Test
-    void should_add_new_account() throws IOException {
+    void should_add_new_account_when_currency_is_not_provided() throws IOException {
         given().contentType(ContentType.JSON)
-                .body(TestUtils.getRequestBodyFromFile("request/add-new-account-request.json", CONTEXT))
+                .body(TestUtils.getRequestBodyFromFile("request/add-new-account-request-without-currency.json", CONTEXT))
                 .when().post("/accounts")
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
     }
+
+    @Test
+    void should_add_new_account_with_EUR_currency_when_currency_is_not_provided() throws IOException{
+        given().contentType(ContentType.JSON)
+                .body(TestUtils.getRequestBodyFromFile("request/add-new-account-request-with-EUR-currency.json", CONTEXT))
+                .when().post("/accounts")
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+    }
+    //test
 
     // edycja balansu
     @Test
@@ -108,3 +121,6 @@ public class BankIntegrationTest {
                 .statusCode(HttpStatus.SC_NO_CONTENT);
     }
 }
+
+// test for transfer when receiver or/and sender id is incorrect
+// test for transfer when balance is < 0

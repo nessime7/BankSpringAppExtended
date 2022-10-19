@@ -66,6 +66,9 @@ public class BankController {
     }
 
     // transfer
+    // please do after tests
+    // Please add logic responsible for rate conversion between USD, EUR and PLN,
+    // all other currencies should be forbidden
     @PostMapping("transfers")
     public ResponseEntity<Void> editAccount(@RequestBody AccountTransferRequest request) {
         bankService.transfer(request);
