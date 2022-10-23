@@ -1,6 +1,7 @@
 package com.BankSaraAPI.model;
 
 public enum Currency {
+    // zamiast parametru, uzyc metody name() wszedzie, usunac parametr
     PLN("PLN"),
     CHF("CHF"),
     EUR("EUR"),

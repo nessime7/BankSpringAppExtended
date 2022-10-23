@@ -46,14 +46,14 @@ public class BankController {
 
     // edit balance
     @PutMapping("accounts/{id}/balance")
-    public ResponseEntity<Account> editAccount(@PathVariable UUID id, @RequestBody EditAccountBalance request) {
+    public ResponseEntity<Account> editAccount(@PathVariable UUID id, @RequestBody EditAccountBalanceRequest request) {
         final var account = bankService.editAccount(id, request);
         return ResponseEntity.ok(account);
     }
 
     // edit currency
     @PutMapping("accounts/{id}/currency")
-    public ResponseEntity<Account> editCurrency(@PathVariable UUID id, @RequestBody EditAccountCurrency request) {
+    public ResponseEntity<Account> editCurrency(@PathVariable UUID id, @RequestBody EditAccountCurrencyRequest request) {
         final var account = bankService.changeCurrency(id, request);
         return ResponseEntity.ok(account);
     }
@@ -65,10 +65,6 @@ public class BankController {
         return ResponseEntity.noContent().build();
     }
 
-    // transfer
-    // please do after tests
-    // Please add logic responsible for rate conversion between USD, EUR and PLN,
-    // all other currencies should be forbidden
     @PostMapping("transfers")
     public ResponseEntity<Void> editAccount(@RequestBody AccountTransferRequest request) throws TransferIsNotPossible {
         bankService.transfer(request);

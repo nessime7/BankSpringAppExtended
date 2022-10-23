@@ -1,13 +1,13 @@
 package com.BankSaraAPI.model;
 
-public class EditAccountCurrency {
+public class EditAccountCurrencyRequest {
     private Currency currency;
 
-    public EditAccountCurrency(Currency currency) {
+    public EditAccountCurrencyRequest(Currency currency) {
         this.currency = currency;
     }
 
-    public EditAccountCurrency() {
+    public EditAccountCurrencyRequest() {
     }
 
     public Currency getCurrency() {

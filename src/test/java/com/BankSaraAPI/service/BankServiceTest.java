@@ -72,7 +72,7 @@ class BankServiceTest {
     void should_edit_account() {
         // given
         var id = UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477");
-        var accountRequest = new EditAccountBalance(2);
+        var accountRequest = new EditAccountBalanceRequest(2);
         var account = new Account(UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477"), "Glowne", 1, Currency.PLN);
         when(bankRepository.getAccounts()).thenReturn(List.of(account));
         // when
@@ -136,25 +136,30 @@ class BankServiceTest {
     void should_change_currency_from_PLN_to_EUR() {
         // given
         var id = UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477");
-        var accountRequest = new EditAccountCurrency(Currency.EUR);
+        var accountRequest = new EditAccountCurrencyRequest(Currency.EUR);
         var account = new Account(UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477"), "Glowne", 1, Currency.PLN);
         when(bankRepository.getAccounts()).thenReturn(List.of(account));
+
         // when
         bankService.changeCurrency(id, accountRequest);
+
         // then
         assertEquals(Currency.EUR, account.getCurrency());
     }
 
     @Test
-    void should_return_EUR_from_USD_transfer() throws TransferIsNotPossible {
+    void should_transfer_USD_to_EUR() throws TransferIsNotPossible {
         // given
         var sender = new Account(UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95477"), "USD account", 1, Currency.USD);
         var receiver = new Account(UUID.fromString("3b0485ed-f8c5-4faf-a8ce-fe6f34b95471"), "EUR account", 0, Currency.EUR);
         when(bankRepository.getAccounts()).thenReturn(List.of(sender, receiver));
         var transfer = new AccountTransferRequest(sender.getId(), receiver.getId(), 1);
+
         // when
         bankService.transfer(transfer);
+
         // then
+        // sprawdz czy zostalo wywolane bankRepository.getAccounts()
         assertEquals(0, sender.getBalance());
         assertEquals(1.02, receiver.getBalance());
     }

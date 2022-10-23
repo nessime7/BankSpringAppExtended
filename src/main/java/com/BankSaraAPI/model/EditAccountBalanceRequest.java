@@ -1,13 +1,13 @@
 package com.BankSaraAPI.model;
 
-public class EditAccountBalance {
+public class EditAccountBalanceRequest {
 
     private double balance;
 
-    public EditAccountBalance() {
+    public EditAccountBalanceRequest() {
     }
 
-    public EditAccountBalance(double balance) {
+    public EditAccountBalanceRequest(double balance) {
         this.balance = balance;
     }
 
