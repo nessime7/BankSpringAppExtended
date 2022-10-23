@@ -1,6 +1,7 @@
 package com.BankSaraAPI.service;
 
 import com.BankSaraAPI.exception.model.AccountBalanceTooLow;
+import com.BankSaraAPI.exception.model.CannotBeLessThanZero;
 import com.BankSaraAPI.exception.model.TransferIsNotPossible;
 import com.BankSaraAPI.model.*;
 import com.BankSaraAPI.repository.BankRepository;
@@ -67,6 +68,10 @@ public class BankService {
                 .stream().filter(a -> a.getId().equals(request.getReceiverId())).findFirst().orElseThrow();
         double sender = senderAccount.getBalance();
         double receiver = receiverAccount.getBalance();
+
+        if (request.getAmount() <= 0){
+            throw new CannotBeLessThanZero();
+        }
 
         if (senderAccount.getBalance() < request.getAmount()){
             throw new AccountBalanceTooLow();

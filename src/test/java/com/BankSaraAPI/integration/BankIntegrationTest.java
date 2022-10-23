@@ -67,7 +67,7 @@ public class BankIntegrationTest {
     }
 
     @Test
-    void should_add_new_account_with_EUR_currency_when_currency_is_not_provided() throws IOException{
+    void should_add_new_account_with_EUR_currency_when_currency_is_not_provided() throws IOException {
         given().contentType(ContentType.JSON)
                 .body(TestUtils.getRequestBodyFromFile("request/add-new-account-request-with-EUR-currency.json", CONTEXT))
                 .when().post("/accounts")
@@ -119,4 +119,25 @@ public class BankIntegrationTest {
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
     }
+
+    // test for transfer when sender id is incorrect
+    @Test
+    void should_not_transfer_when_id_is_incorrect() throws IOException {
+        given().contentType(ContentType.JSON)
+                .body(TestUtils.getRequestBodyFromFile("request/transfer-wrong.json", CONTEXT))
+                .when().post("/transfers")
+                .then()
+                .statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
+
+    // test for transfer when balance is < 0
+    @Test
+    void should_not_transfer_when_balance_is_under_zero() throws IOException {
+        given().contentType(ContentType.JSON)
+                .body(TestUtils.getRequestBodyFromFile("request/transfer-wrong-balance.json", CONTEXT))
+                .when().post("/transfers")
+                .then()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    }
 }
+
