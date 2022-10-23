@@ -1,5 +1,6 @@
 package com.BankSaraAPI.controller;
 
+import com.BankSaraAPI.exception.model.TransferIsNotPossible;
 import com.BankSaraAPI.model.*;
 import com.BankSaraAPI.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import java.util.UUID;
 - account management
     - get/create/edit/delete account
     - transfer between accounts
-
  GET/POST/PUT/DELETE
  */
 
@@ -70,7 +70,7 @@ public class BankController {
     // Please add logic responsible for rate conversion between USD, EUR and PLN,
     // all other currencies should be forbidden
     @PostMapping("transfers")
-    public ResponseEntity<Void> editAccount(@RequestBody AccountTransferRequest request) {
+    public ResponseEntity<Void> editAccount(@RequestBody AccountTransferRequest request) throws TransferIsNotPossible {
         bankService.transfer(request);
         return ResponseEntity.noContent().build();
     }

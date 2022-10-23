@@ -74,7 +74,6 @@ public class BankIntegrationTest {
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
     }
-    //test
 
     // edycja balansu
     @Test
@@ -121,6 +120,3 @@ public class BankIntegrationTest {
                 .statusCode(HttpStatus.SC_NO_CONTENT);
     }
 }
-
-// test for transfer when receiver or/and sender id is incorrect
-// test for transfer when balance is < 0
