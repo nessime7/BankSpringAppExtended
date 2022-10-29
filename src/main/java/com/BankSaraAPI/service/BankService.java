@@ -1,8 +1,7 @@
 package com.BankSaraAPI.service;
 
-import com.BankSaraAPI.exception.model.AccountBalanceTooLow;
-import com.BankSaraAPI.exception.model.CannotBeLessThanZero;
-import com.BankSaraAPI.exception.model.TransferIsNotPossible;
+import com.BankSaraAPI.config.Checks;
+import com.BankSaraAPI.exception.model.MenuManagerExceptionMessages;
 import com.BankSaraAPI.model.*;
 import com.BankSaraAPI.repository.BankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.BankSaraAPI.model.Currency.CHF;
+import static com.BankSaraAPI.model.Currency.*;
 
 @Service
 public class BankService {
@@ -55,131 +54,76 @@ public class BankService {
         bankRepository.removeAccountById(id);
     }
 
-    public void transferMethodWithoutConverter(AccountTransferRequest request) {
-        final var senderAccount = bankRepository.getAccounts()
-                .stream().filter(a -> a.getId().equals(request.getSenderId())).findFirst().orElseThrow();
-        final var receiverAccount = bankRepository.getAccounts()
-                .stream().filter(a -> a.getId().equals(request.getReceiverId())).findFirst().orElseThrow();
-        senderAccount.setBalance(senderAccount.getBalance() - request.getAmount());
-        receiverAccount.setBalance(receiverAccount.getBalance() + request.getAmount());
-    }
     // czyzm sie rozni checked od unchecked exception, ma byc unchecked
 
-    Set<Currency> forbiddenCurrencies = Set.of(CHF, Currency.GBP);
+    Set<Currency> forbiddenCurrencies = Set.of(CHF, GBP);
 
-    public void transfer(AccountTransferRequest request) throws TransferIsNotPossible {
-        final var senderAccount = bankRepository.getAccounts().stream()
-                .filter(a -> a.getId().equals(request.getSenderId()))
-                .findFirst()
-                .orElseThrow(); // wyekstraktoac logike odpowiedzialna za wyciaganie pojedynczego konta do bankRepository i reuzycie tego
-        final var receiverAccount = bankRepository.getAccounts().stream()
-                .filter(a -> a.getId().equals(request.getReceiverId()))
-                .findFirst()
-                .orElseThrow();
-        double sender = senderAccount.getBalance(); // senderBalance
-        double receiver = receiverAccount.getBalance();
+    public void transfer(AccountTransferRequest request) {
+        Account sender = bankRepository.getAccountById(request.getSenderId());
+        double senderBalance = sender.getBalance();
+        Account receiver = bankRepository.getAccountById(request.getReceiverId());
+        double receiverBalance = receiver.getBalance();
 
+//        Checks.checkThat((request.getAmount() <=0), MenuManagerExceptionMessages.CANNOT_BE_LESS_THAN_ZERO);
         if (request.getAmount() <= 0) {
-            throw new CannotBeLessThanZero();
+            throw new IllegalArgumentException(MenuManagerExceptionMessages.CANNOT_BE_LESS_THAN_ZERO);
         }
 
-        if (senderAccount.getBalance() < request.getAmount()) {
-            throw new AccountBalanceTooLow();
-        }
-        // warunek zakazanych walut tutaj
-        if ((forbiddenCurrencies.contains(senderAccount.getCurrency()) ||
-                forbiddenCurrencies.contains(receiverAccount.getCurrency()))
-                && !senderAccount.getCurrency().equals(receiverAccount.getCurrency())
-        ) {
-            throw new TransferIsNotPossible();
+//        Checks.checkThat(senderBalance < request.getAmount(),MenuManagerExceptionMessages.ACCOUNT_BALANCE_TOO_LOW);
+
+        if (senderBalance < request.getAmount()) {
+            throw new IllegalStateException(MenuManagerExceptionMessages.ACCOUNT_BALANCE_TOO_LOW);
         }
 
-        if (senderAccount.getBalance() >= request.getAmount()) {   //do usuniecia
-            if (senderAccount.getCurrency().getCurrencyName().equals(receiverAccount.getCurrency().getCurrencyName())) {
-            } // do zrefaktorowania
+//        Checks.checkThat(((forbiddenCurrencies.contains(sender.getCurrency()) ||
+//                forbiddenCurrencies.contains(receiver.getCurrency()))
+//                && !sender.getCurrency().equals(receiver.getCurrency())),MenuManagerExceptionMessages.TRANSFER_IS_NOT_POSSIBLE);
 
-            if (senderAccount.getCurrency().getCurrencyName().equals("PLN") && receiverAccount.getCurrency().getCurrencyName().equals("PLN")) {
-                transferMethodWithoutConverter(request); // transfer
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("EUR") && receiverAccount.getCurrency().getCurrencyName().equals("EUR")) {
-                transferMethodWithoutConverter(request);
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("USD") && receiverAccount.getCurrency().getCurrencyName().equals("USD")) {
-                transferMethodWithoutConverter(request);
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("CHF") && receiverAccount.getCurrency().getCurrencyName().equals("CHF")) {
-                transferMethodWithoutConverter(request);
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("GBP") && receiverAccount.getCurrency().getCurrencyName().equals("GBP")) {
-                transferMethodWithoutConverter(request);
-            }
-            //else {}
-            if (senderAccount.getCurrency().getCurrencyName().equals("USD") && receiverAccount.getCurrency().getCurrencyName().equals("EUR")) {
-                transferMethodWithConverter(1.02, senderAccount, sender, request, receiverAccount, receiver); //multicurrencyTransfer
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("EUR") && receiverAccount.getCurrency().getCurrencyName().equals("USD")) {
-                transferMethodWithConverter(0.98, senderAccount, sender, request, receiverAccount, receiver);
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("USD") && receiverAccount.getCurrency().getCurrencyName().equals("PLN")) {
-                transferMethodWithConverter(4.88, senderAccount, sender, request, receiverAccount, receiver);
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("PLN") && receiverAccount.getCurrency().getCurrencyName().equals("USD")) {
-                transferMethodWithConverter(0.20, senderAccount, sender, request, receiverAccount, receiver);
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("EUR") && receiverAccount.getCurrency().getCurrencyName().equals("PLN")) {
-                transferMethodWithConverter(4.77, senderAccount, sender, request, receiverAccount, receiver);
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("PLN") && receiverAccount.getCurrency().getCurrencyName().equals("EUR")) {
-                transferMethodWithConverter(0.21, senderAccount, sender, request, receiverAccount, receiver);
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("CHF") && receiverAccount.getCurrency().getCurrencyName().equals("PLN")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("PLN") && receiverAccount.getCurrency().getCurrencyName().equals("CHF")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("CHF") && receiverAccount.getCurrency().getCurrencyName().equals("EUR")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("EUR") && receiverAccount.getCurrency().getCurrencyName().equals("CHF")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("CHF") && receiverAccount.getCurrency().getCurrencyName().equals("USD")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("USD") && receiverAccount.getCurrency().getCurrencyName().equals("CHF")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("CHF") && receiverAccount.getCurrency().getCurrencyName().equals("GBP")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("GBP") && receiverAccount.getCurrency().getCurrencyName().equals("CHF")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("GBP") && receiverAccount.getCurrency().getCurrencyName().equals("PLN")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("PLN") && receiverAccount.getCurrency().getCurrencyName().equals("GBP")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("EUR") && receiverAccount.getCurrency().getCurrencyName().equals("GBP")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("GBP") && receiverAccount.getCurrency().getCurrencyName().equals("EUR")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("GBP") && receiverAccount.getCurrency().getCurrencyName().equals("USD")) {
-                throw new TransferIsNotPossible();
-            }
-            if (senderAccount.getCurrency().getCurrencyName().equals("USD") && receiverAccount.getCurrency().getCurrencyName().equals("GBP")) {
-                throw new TransferIsNotPossible();
-            }
+        if ((forbiddenCurrencies.contains(sender.getCurrency()) ||
+                forbiddenCurrencies.contains(receiver.getCurrency()))
+                && !sender.getCurrency().equals(receiver.getCurrency())) {
+            throw new IllegalArgumentException(MenuManagerExceptionMessages.TRANSFER_IS_NOT_POSSIBLE);
+        }
+
+        if (sender.getCurrency().equals(receiver.getCurrency())) {
+            transferWithoutConverter(request, sender, receiver);
+        }
+        if (sender.getCurrency().equals(USD) && receiver.getCurrency().equals(EUR)) {
+            double converter = 1.02;
+            multiCurrencyTranfer(sender, request, receiver, converter);
+        }
+        if (sender.getCurrency().equals(EUR) && receiver.getCurrency().equals(USD)) {
+            double converter = 0.98;
+            multiCurrencyTranfer(sender, request, receiver, converter);
+        }
+        if (sender.getCurrency().equals(USD) && receiver.getCurrency().equals(PLN)) {
+            double converter = 4.88;
+            multiCurrencyTranfer(sender, request, receiver, converter);
+        }
+        if (sender.getCurrency().equals(PLN) && receiver.getCurrency().equals(USD)) {
+            double converter = 0.20;
+            multiCurrencyTranfer(sender, request, receiver, converter);
+        }
+        if (sender.getCurrency().equals(EUR) && receiver.getCurrency().equals(PLN)) {
+            double converter = 4.77;
+            multiCurrencyTranfer(sender, request, receiver, converter);
+        }
+        if (sender.getCurrency().equals(PLN) && receiver.getCurrency().equals(EUR)) {
+            double converter = 0.21;
+            multiCurrencyTranfer(sender, request, receiver, converter);
         }
     }
 
-    private void transferMethodWithConverter(double converter, Account senderAccount, double sender, AccountTransferRequest request, Account receiverAccount, double receiver) {
-        senderAccount.setBalance(sender - (request.getAmount()));
-        receiverAccount.setBalance((receiver * converter) + ((request.getAmount()) * converter));
+    private void multiCurrencyTranfer(Account sender,
+                                      AccountTransferRequest request,
+                                      Account receiver,
+                                      double converter) {
+        sender.setBalance(sender.getBalance() - request.getAmount());
+        receiver.setBalance(receiver.getBalance() + (request.getAmount()) * converter);
     }
 
+    public void transferWithoutConverter(AccountTransferRequest request, Account sender, Account receiver) {
+        sender.setBalance(sender.getBalance() - request.getAmount());
+        receiver.setBalance(receiver.getBalance() + request.getAmount());
+    }
 }

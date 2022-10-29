@@ -12,6 +12,9 @@ public class CreateAccountRequest {
         this.currency = currency;
     }
 
+    public CreateAccountRequest() {
+    }
+
     public String getName() {
         return name;
     }

@@ -24,6 +24,18 @@
     "currency": "USD"
   },
   {
+    "id": "e62ee6a0-4549-4956-a0dd-685f23526961",
+    "name": "CHF account",
+    "balance": 50.0,
+    "currency": "CHF"
+  },
+  {
+    "id": "7b93e505-2c0f-47a6-8ad6-6f6125c1c9a3",
+    "name": "GBP account",
+    "balance": 50.0,
+    "currency": "GBP"
+  },
+  {
     "id": "c7c6c077-931e-42f9-982a-8c836ab6b932",
     "name": "GBP account",
     "balance": 250.5,

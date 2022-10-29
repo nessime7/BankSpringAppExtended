@@ -1,6 +1,5 @@
 package com.BankSaraAPI.controller;
 
-import com.BankSaraAPI.exception.model.TransferIsNotPossible;
 import com.BankSaraAPI.model.*;
 import com.BankSaraAPI.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class BankController {
     }
 
     @PostMapping("transfers")
-    public ResponseEntity<Void> editAccount(@RequestBody AccountTransferRequest request) throws TransferIsNotPossible {
+    public ResponseEntity<Void> editAccount(@RequestBody AccountTransferRequest request) {
         bankService.transfer(request);
         return ResponseEntity.noContent().build();
     }

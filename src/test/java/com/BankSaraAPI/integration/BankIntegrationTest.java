@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @SpringBootTest(classes = {BankSaraApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,6 +43,8 @@ public class BankIntegrationTest {
         bankRepository.save(new Account(UUID.fromString("5fd82e4e-c0ae-4771-a9d5-e18e3df32d65"), "savings account", 0, Currency.PLN));
         bankRepository.save(new Account(UUID.fromString("5f73cec7-6ac1-46ee-a203-794c35d8800c"), "EUR account", 50, Currency.EUR));
         bankRepository.save(new Account(UUID.fromString("3d9c2f62-d66c-4e31-89a7-ccdf271a7591"), "USD account", 50, Currency.USD));
+        bankRepository.save(new Account(UUID.fromString("e62ee6a0-4549-4956-a0dd-685f23526961"), "CHF account", 50, Currency.CHF));
+        bankRepository.save(new Account(UUID.fromString("7b93e505-2c0f-47a6-8ad6-6f6125c1c9a3"), "GBP account", 50, Currency.GBP));
         bankRepository.save(new Account(UUID.fromString("c7c6c077-931e-42f9-982a-8c836ab6b932"), "GBP account", 250.5, Currency.PLN));
     }
 
@@ -110,7 +113,7 @@ public class BankIntegrationTest {
                 .statusCode(HttpStatus.SC_NO_CONTENT);
     }
 
-    // transfer
+    // transfer - ok
     @Test
     void should_transfer_50_from_EUR_account_to_USD_account() throws IOException {
         given().contentType(ContentType.JSON)
@@ -121,24 +124,46 @@ public class BankIntegrationTest {
     }
 
     // test for transfer when sender id is incorrect
-    @Test // transfer-incorrect-id
+    @Test
     void should_not_transfer_when_id_is_incorrect() throws IOException {
         given().contentType(ContentType.JSON)
-                .body(TestUtils.getRequestBodyFromFile("request/transfer-wrong.json", CONTEXT))
+                .body(TestUtils.getRequestBodyFromFile("request/transfer-incorrect-id.json", CONTEXT))
                 .when().post("/transfers")
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
-    // test for transfer when balance is < 0
-    @Test // transfer-incorrect-balance
+    // test impossible - for transfer when balance is < 0
+    @Test
     void should_not_transfer_when_balance_is_under_zero() throws IOException {
         given().contentType(ContentType.JSON)
-                .body(TestUtils.getRequestBodyFromFile("request/transfer-wrong-balance.json", CONTEXT))
+                .body(TestUtils.getRequestBodyFromFile("request/transfer-incorrect-balance.json", CONTEXT))
                 .when().post("/transfers")
                 .then()
-                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .and().body("message", is("Account balance is too low"));
     }
-    // do dodania parsowanie wyjatkow i  sprawdzenie ciala odpowiedzi
+
+    // test impossible - for transfer when amount is < 0
+    @Test
+    void should_not_transfer_when_amount_is_under_zero() throws IOException {
+        given().contentType(ContentType.JSON)
+                .body(TestUtils.getRequestBodyFromFile("request/transfer-incorrect-amount.json", CONTEXT))
+                .when().post("/transfers")
+                .then()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .and().body("message", is("Cannot be less than zero"));
+    }
+
+    // transfer - from GBP to CHF - impossible
+    @Test
+    void should_not_transfer_20_from_GBP_account_to_CHF_account() throws IOException {
+        given().contentType(ContentType.JSON)
+                .body(TestUtils.getRequestBodyFromFile("request/transfer-incorrect-GBP-to-CHF.json", CONTEXT))
+                .when().post("/transfers")
+                .then()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .and().body("message", is("Transfer is not possible"));
+    }
 }
 
