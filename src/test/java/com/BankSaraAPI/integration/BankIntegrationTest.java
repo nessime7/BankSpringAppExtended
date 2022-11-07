@@ -2,17 +2,24 @@ package com.BankSaraAPI.integration;
 
 import com.BankSaraAPI.BankSaraApplication;
 import com.BankSaraAPI.TestUtils;
+import com.BankSaraAPI.db.DataBaseRepository;
 import com.BankSaraAPI.model.Account;
 import com.BankSaraAPI.model.Currency;
-import com.BankSaraAPI.repository.BankRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
+import org.springframework.test.context.jdbc.SqlGroup;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -21,7 +28,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {BankSaraApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SqlGroup({@Sql("/data.sql")})
 public class BankIntegrationTest {
 
     @LocalServerPort
@@ -29,8 +39,8 @@ public class BankIntegrationTest {
     // zdefiniowanie stringa aby nie powtarzać za każdym razem w ścieżce
     private static final String CONTEXT = "account";
 
-    @Autowired
-    private BankRepository bankRepository;
+//    @Autowired
+//    private DataBaseRepository dataBaseRepository;
 
     @BeforeEach
     void setUp() {
@@ -38,14 +48,15 @@ public class BankIntegrationTest {
         // włącz rejestrowanie żądania i odpowiedzi
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
-        bankRepository.deleteAll();
-        bankRepository.save(new Account(UUID.fromString("fc35ad28-91fc-449b-af3e-918417266f9d"), "main account", 10000.10, Currency.PLN));
-        bankRepository.save(new Account(UUID.fromString("5fd82e4e-c0ae-4771-a9d5-e18e3df32d65"), "savings account", 0, Currency.PLN));
-        bankRepository.save(new Account(UUID.fromString("5f73cec7-6ac1-46ee-a203-794c35d8800c"), "EUR account", 50, Currency.EUR));
-        bankRepository.save(new Account(UUID.fromString("3d9c2f62-d66c-4e31-89a7-ccdf271a7591"), "USD account", 50, Currency.USD));
-        bankRepository.save(new Account(UUID.fromString("e62ee6a0-4549-4956-a0dd-685f23526961"), "CHF account", 50, Currency.CHF));
-        bankRepository.save(new Account(UUID.fromString("7b93e505-2c0f-47a6-8ad6-6f6125c1c9a3"), "GBP account", 50, Currency.GBP));
-        bankRepository.save(new Account(UUID.fromString("c7c6c077-931e-42f9-982a-8c836ab6b932"), "GBP account", 250.5, Currency.PLN));
+//        dataBaseRepository.deleteAll();
+//        dataBaseRepository.save(new Account(UUID.fromString("fc35ad28-91fc-449b-af3e-918417266f9d"), "main account", 10000.10, Currency.PLN));
+//        dataBaseRepository.save(new Account(UUID.fromString("5fd82e4e-c0ae-4771-a9d5-e18e3df32d65"), "savings account", 0, Currency.PLN));
+//        dataBaseRepository.save(new Account(UUID.fromString("5f73cec7-6ac1-46ee-a203-794c35d8800c"), "EUR account", 50, Currency.EUR));
+//        dataBaseRepository.save(new Account(UUID.fromString("3d9c2f62-d66c-4e31-89a7-ccdf271a7591"), "USD account", 50, Currency.USD));
+//        dataBaseRepository.save(new Account(UUID.fromString("e62ee6a0-4549-4956-a0dd-685f23526961"), "CHF account", 50, Currency.CHF));
+//        dataBaseRepository.save(new Account(UUID.fromString("7b93e505-2c0f-47a6-8ad6-6f6125c1c9a3"), "GBP account", 50, Currency.GBP));
+//        dataBaseRepository.save(new Account(UUID.fromString("c7c6c077-931e-42f9-982a-8c836ab6b932"), "GBP account", 250.5, Currency.PLN));
+//
     }
 
     // wyświetlanie wszystkich kont
