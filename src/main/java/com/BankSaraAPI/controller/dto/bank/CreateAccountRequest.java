@@ -1,5 +1,6 @@
-package com.BankSaraAPI.model;
+package com.BankSaraAPI.controller.dto.bank;
 
+import com.BankSaraAPI.model.CurrencyType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,6 @@ public class CreateAccountRequest {
     private String name;
     @NotBlank
     private double balance;
-    private Currency currency;
+    private CurrencyType currency;
 
 }

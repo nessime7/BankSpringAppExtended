@@ -1,7 +1,5 @@
 package com.BankSaraAPI.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import java.util.List;
 import java.util.UUID;
 
 // obiekt danej klasy reprezentuje rekord w tabeli w bazie danych
@@ -28,44 +27,21 @@ public final class Account {
     @Positive
     private double balance;
     @Enumerated(EnumType.STRING)
-    private Currency currency;
+    private CurrencyType currency;
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "accountId", updatable = false, insertable = false)
+    private List<Card> cards;
 
-    // new
-    public Account(String name, double balance, Currency currency) {
+    public Account(String name, double balance, CurrencyType currency) {
         this.name = name;
         this.balance = balance;
         this.currency = currency;
     }
 
-//    public UUID getId() {
-//        return id;
-//    }
-//
-//    public void setId(UUID id) {
-//        this.id = id;
-//    }
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public double getBalance() {
-//        return balance;
-//    }
-//
-//    public void setBalance(double balance) {
-//        this.balance = balance;
-//    }
-//
-//    public Currency getCurrency() {
-//        return currency;
-//    }
-//
-//    public void setCurrency(Currency currency) {
-//        this.currency = currency;
-//    }
+    public Account(UUID id, String name, double balance, CurrencyType currency) {
+        this.id = id;
+        this.name = name;
+        this.balance = balance;
+        this.currency = currency;
+    }
 }

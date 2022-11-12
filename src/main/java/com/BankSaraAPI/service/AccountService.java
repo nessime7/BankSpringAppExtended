@@ -1,72 +1,73 @@
 package com.BankSaraAPI.service;
 
 import com.BankSaraAPI.common.MenuManagerExceptionMessages;
-import com.BankSaraAPI.db.DataBaseRepository;
-import com.BankSaraAPI.model.*;
+import com.BankSaraAPI.controller.dto.bank.AccountTransferRequest;
+import com.BankSaraAPI.controller.dto.bank.CreateAccountRequest;
+import com.BankSaraAPI.controller.dto.bank.EditAccountBalanceRequest;
+import com.BankSaraAPI.controller.dto.bank.EditAccountCurrencyRequest;
+import com.BankSaraAPI.model.Account;
+import com.BankSaraAPI.model.CurrencyType;
+import com.BankSaraAPI.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.EntityManager;
 
-import static com.BankSaraAPI.model.Currency.*;
+import static com.BankSaraAPI.model.CurrencyType.*;
 
 @Service
-public class BankService {
+public class AccountService {
 
-    private final DataBaseRepository dataBaseRepository;
+    private final AccountRepository bankRepository;
 
     @Autowired
-    public BankService(DataBaseRepository dataBaseRepository) {
-        this.dataBaseRepository = dataBaseRepository;
+    public AccountService(AccountRepository bankRepository) {
+        this.bankRepository = bankRepository;
     }
 
     public Account findAccount(UUID accountID) {
-        return dataBaseRepository.findById(accountID)
+        return bankRepository.findById(accountID)
                 .orElseThrow(() -> new IllegalStateException(MenuManagerExceptionMessages.ACCOUNT_NOT_FOUND));
     }
 
     public List<Account> getAccounts() {
-        final List<Account> accountsPosition = dataBaseRepository.findAll();
+        final List<Account> accountsPosition = bankRepository.findAll();
         return accountsPosition;
     }
 
     public void createAccount(CreateAccountRequest request) {
         if (request.getCurrency() == null) {
-            request.setCurrency(Currency.PLN);
+            request.setCurrency(CurrencyType.PLN);
         }
-        dataBaseRepository.save(new Account(UUID.randomUUID(), request.getName(), request.getBalance(), request.getCurrency()));
+        bankRepository.save(new Account(UUID.randomUUID(), request.getName(), request.getBalance(), request.getCurrency()));
     }
 
     public Account editAccount(UUID id, EditAccountBalanceRequest request) {
         final var accountPosition = findAccount(id);
         accountPosition.setBalance(request.getBalance());
-        return dataBaseRepository.save(accountPosition);
+        return bankRepository.save(accountPosition);
     }
 
     public Account changeCurrency(UUID id, EditAccountCurrencyRequest request) {
         final var accountPosition = findAccount(id);
         accountPosition.setCurrency(request.getCurrency());
-        return dataBaseRepository.save(accountPosition);
+        return bankRepository.save(accountPosition);
     }
 
     public void deleteAccount(UUID id) {
         final var accountToDelete = findAccount(id);
-        dataBaseRepository.delete(accountToDelete);
+        bankRepository.delete(accountToDelete);
     }
 
-    Set<Currency> forbiddenCurrencies = Set.of(CHF, GBP);
+    Set<CurrencyType> forbiddenCurrencies = Set.of(CHF, GBP);
 
     public void transfer(AccountTransferRequest request) throws SQLException {
-        Account sender = dataBaseRepository.getById(request.getSenderId());
+        Account sender = bankRepository.getById(request.getSenderId());
         double senderBalance = sender.getBalance();
-        Account receiver = dataBaseRepository.getById(request.getReceiverId());
+        Account receiver = bankRepository.getById(request.getReceiverId());
         double receiverBalance = receiver.getBalance();
 
         if (request.getAmount() <= 0) {
@@ -119,17 +120,15 @@ public class BankService {
                                        double converter) {
         sender.setBalance(sender.getBalance() - request.getAmount());
         receiver.setBalance(receiver.getBalance() + (request.getAmount()) * converter);
-        dataBaseRepository.save(sender);
-        dataBaseRepository.save(receiver);
+        bankRepository.save(sender);
+        bankRepository.save(receiver);
     }
 
     public void transferWithoutConverter(AccountTransferRequest request, Account sender, Account receiver) {
         sender.setBalance(sender.getBalance() - request.getAmount());
         receiver.setBalance(receiver.getBalance() + request.getAmount());
-        dataBaseRepository.save(sender);
-        dataBaseRepository.save(receiver);
-
-
+        bankRepository.save(sender);
+        bankRepository.save(receiver);
     }
 
 }

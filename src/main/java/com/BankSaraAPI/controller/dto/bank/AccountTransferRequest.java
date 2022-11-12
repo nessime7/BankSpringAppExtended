@@ -1,4 +1,4 @@
-package com.BankSaraAPI.model;
+package com.BankSaraAPI.controller.dto.bank;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
