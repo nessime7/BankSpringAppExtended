@@ -1,11 +1,11 @@
-package com.BankSaraAPI.controller;
+package com.BankSaraAPI.account.controller;
 
-import com.BankSaraAPI.controller.dto.bank.AccountTransferRequest;
-import com.BankSaraAPI.controller.dto.bank.CreateAccountRequest;
-import com.BankSaraAPI.controller.dto.bank.EditAccountBalanceRequest;
-import com.BankSaraAPI.controller.dto.bank.EditAccountCurrencyRequest;
-import com.BankSaraAPI.model.*;
-import com.BankSaraAPI.service.AccountService;
+import com.BankSaraAPI.account.model.Account;
+import com.BankSaraAPI.account.dto.AccountTransferRequest;
+import com.BankSaraAPI.account.dto.CreateAccountRequest;
+import com.BankSaraAPI.account.dto.EditAccountBalanceRequest;
+import com.BankSaraAPI.account.dto.EditAccountCurrencyRequest;
+import com.BankSaraAPI.account.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

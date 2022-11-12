@@ -1,12 +1,13 @@
 package com.BankSaraAPI.service;
 
-import com.BankSaraAPI.controller.dto.card.CreateCardRequest;
-import com.BankSaraAPI.model.Account;
-import com.BankSaraAPI.model.Card;
-import com.BankSaraAPI.model.CardType;
-import com.BankSaraAPI.model.CurrencyType;
-import com.BankSaraAPI.repository.AccountRepository;
-import com.BankSaraAPI.repository.CardRepository;
+import com.BankSaraAPI.card.dto.CreateCardRequest;
+import com.BankSaraAPI.account.model.Account;
+import com.BankSaraAPI.card.model.Card;
+import com.BankSaraAPI.card.model.CardType;
+import com.BankSaraAPI.account.model.CurrencyType;
+import com.BankSaraAPI.account.repository.AccountRepository;
+import com.BankSaraAPI.card.repository.CardRepository;
+import com.BankSaraAPI.card.service.CardService;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

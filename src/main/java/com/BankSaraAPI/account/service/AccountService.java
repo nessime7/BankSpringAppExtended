@@ -1,13 +1,13 @@
-package com.BankSaraAPI.service;
+package com.BankSaraAPI.account.service;
 
-import com.BankSaraAPI.common.MenuManagerExceptionMessages;
-import com.BankSaraAPI.controller.dto.bank.AccountTransferRequest;
-import com.BankSaraAPI.controller.dto.bank.CreateAccountRequest;
-import com.BankSaraAPI.controller.dto.bank.EditAccountBalanceRequest;
-import com.BankSaraAPI.controller.dto.bank.EditAccountCurrencyRequest;
-import com.BankSaraAPI.model.Account;
-import com.BankSaraAPI.model.CurrencyType;
-import com.BankSaraAPI.repository.AccountRepository;
+import com.BankSaraAPI.config.MenuManagerExceptionMessages;
+import com.BankSaraAPI.account.dto.AccountTransferRequest;
+import com.BankSaraAPI.account.dto.CreateAccountRequest;
+import com.BankSaraAPI.account.dto.EditAccountBalanceRequest;
+import com.BankSaraAPI.account.dto.EditAccountCurrencyRequest;
+import com.BankSaraAPI.account.model.Account;
+import com.BankSaraAPI.account.model.CurrencyType;
+import com.BankSaraAPI.account.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.BankSaraAPI.model.CurrencyType.*;
+import static com.BankSaraAPI.account.model.CurrencyType.*;
 
 @Service
 public class AccountService {

@@ -1,4 +1,4 @@
-package com.BankSaraAPI.model;
+package com.BankSaraAPI.card.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

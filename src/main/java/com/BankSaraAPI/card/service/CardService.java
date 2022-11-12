@@ -1,15 +1,15 @@
-package com.BankSaraAPI.service;
+package com.BankSaraAPI.card.service;
 
-import com.BankSaraAPI.controller.dto.card.CreateCardRequest;
-import com.BankSaraAPI.model.Account;
-import com.BankSaraAPI.model.Card;
-import com.BankSaraAPI.repository.CardRepository;
+import com.BankSaraAPI.card.dto.CreateCardRequest;
+import com.BankSaraAPI.account.model.Account;
+import com.BankSaraAPI.card.model.Card;
+import com.BankSaraAPI.card.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static com.BankSaraAPI.model.CardType.PAYMENT;
+import static com.BankSaraAPI.card.model.CardType.PAYMENT;
 
 @Service
 public class CardService {

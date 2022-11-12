@@ -1,4 +1,4 @@
-package com.BankSaraAPI.common;
+package com.BankSaraAPI.config;
 
 public final class MenuManagerExceptionMessages {
 

@@ -1,4 +1,4 @@
-package com.BankSaraAPI.model;
+package com.BankSaraAPI.account.model;
 
 public enum CurrencyType {
     PLN,

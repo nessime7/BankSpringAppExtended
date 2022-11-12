@@ -1,11 +1,9 @@
-package com.BankSaraAPI.repository;
+package com.BankSaraAPI.card.repository;
 
-import com.BankSaraAPI.model.Account;
-import com.BankSaraAPI.model.Card;
+import com.BankSaraAPI.card.model.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.awt.*;
 import java.util.UUID;
 
 @Repository

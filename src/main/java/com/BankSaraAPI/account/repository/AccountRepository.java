@@ -1,6 +1,6 @@
-package com.BankSaraAPI.repository;
+package com.BankSaraAPI.account.repository;
 
-import com.BankSaraAPI.model.Account;
+import com.BankSaraAPI.account.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

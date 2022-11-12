@@ -1,9 +1,9 @@
-package com.BankSaraAPI.controller;
+package com.BankSaraAPI.card.controller;
 
 
-import com.BankSaraAPI.controller.dto.card.CreateCardRequest;
-import com.BankSaraAPI.service.AccountService;
-import com.BankSaraAPI.service.CardService;
+import com.BankSaraAPI.card.dto.CreateCardRequest;
+import com.BankSaraAPI.account.service.AccountService;
+import com.BankSaraAPI.card.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

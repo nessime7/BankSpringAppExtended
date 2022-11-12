@@ -1,6 +1,6 @@
-package com.BankSaraAPI.controller.dto.bank;
+package com.BankSaraAPI.account.dto;
 
-import com.BankSaraAPI.model.CurrencyType;
+import com.BankSaraAPI.account.model.CurrencyType;
 
 public class EditAccountCurrencyRequest {
     private CurrencyType currency;

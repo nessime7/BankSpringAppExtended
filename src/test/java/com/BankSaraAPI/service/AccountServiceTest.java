@@ -1,12 +1,13 @@
 package com.BankSaraAPI.service;
 
-import com.BankSaraAPI.controller.dto.bank.AccountTransferRequest;
-import com.BankSaraAPI.controller.dto.bank.CreateAccountRequest;
-import com.BankSaraAPI.controller.dto.bank.EditAccountBalanceRequest;
-import com.BankSaraAPI.controller.dto.bank.EditAccountCurrencyRequest;
-import com.BankSaraAPI.model.Account;
-import com.BankSaraAPI.model.CurrencyType;
-import com.BankSaraAPI.repository.AccountRepository;
+import com.BankSaraAPI.account.dto.AccountTransferRequest;
+import com.BankSaraAPI.account.dto.CreateAccountRequest;
+import com.BankSaraAPI.account.dto.EditAccountBalanceRequest;
+import com.BankSaraAPI.account.dto.EditAccountCurrencyRequest;
+import com.BankSaraAPI.account.model.Account;
+import com.BankSaraAPI.account.model.CurrencyType;
+import com.BankSaraAPI.account.repository.AccountRepository;
+import com.BankSaraAPI.account.service.AccountService;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
