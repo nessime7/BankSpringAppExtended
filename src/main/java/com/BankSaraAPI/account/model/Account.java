@@ -16,11 +16,10 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "accounts")
 public final class Account {
 
     @Id
-    @GeneratedValue(generator = "id")
+    @Column(name = "id")
     private UUID id;
     @NotBlank
     private String name;

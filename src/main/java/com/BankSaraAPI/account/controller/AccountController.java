@@ -21,6 +21,16 @@ import java.util.UUID;
  GET/POST/PUT/DELETE
  */
 
+/*
+1. Baza lokalna - postgres
+branch -> PR -> merge -> budowanie programu na devowym srodowisu(git clone, gradle build, gradle bootRun,
+po tym program widoczny na jakims porcie)
+2. Baza devowa - postgres
+GET 131.123.123.123/api/accounts
+3. Baza produkcyjna
+GET 131.123.123.223/api/accounts
+
+ */
 @RestController
 public class AccountController {
 

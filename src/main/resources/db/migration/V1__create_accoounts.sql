@@ -6,4 +6,3 @@ create TABLE IF NOT EXISTS accounts
     currency CHARACTER VARYING(4) NOT null,
     CONSTRAINT accounts_pkey PRIMARY KEY (id)
 );
--> 12152151
