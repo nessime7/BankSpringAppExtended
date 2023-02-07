@@ -1,0 +1,32 @@
+# oznacza wersję Docker Compose (aktualna wersja to 3.3)
+version: '3.3'
+# sekcja, w której definiujemy serwisy
+services:
+# nazwa własna usługi
+  postgresqldb:
+#   wskazujemy z jakiego obrazu ma być zbudowany kontener
+    image: postgres
+#   definiujemy porty, które będą mapowane z konteneru
+    ports:
+      - "5432:5432"
+#   zmienna środowiskowa dla danego kontenera
+    environment:
+#     dzięki temu nie potrzebujemy użytkownika i hasła
+      - POSTGRES_HOST_AUTH_METHOD=trust
+#     nazwa naszej bazy danych
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=root
+  # nazwa własna usługi
+  app:
+#   definiujemy nazwę kontenera
+    container_name: springboot-postgresql
+#   wskazujemy z jakiego obrazu ma być zbudowany kontener
+    image: springboot-postgresql
+#   wskazujemy ścieżkę do pliku Dockerfile naszego serwisu
+    build: ./
+#   definiujemy porty, które będą mapowane z konteneru
+    ports:
+      - "8080:8080"
+#   ustawiamy kolejność, w jakiej usługi muszą być uruchamiane i zatrzymywane
+    depends_on:
+      - postgresqldb
